@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daily Sharp — 3 questions a day</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+         background: #faf8f4; color: #1a1a1a; min-height: 100vh;
+         display: flex; justify-content: center; padding: 24px 16px; }
+  .app { width: 100%; max-width: 560px; }
+  header { text-align: center; margin-bottom: 20px; }
+  h1 { font-size: 1.6rem; letter-spacing: -0.5px; }
+  h1 span { color: #c0392b; }
+  .sub { color: #777; font-size: 0.85rem; margin-top: 4px; }
+  .statbar { display: flex; justify-content: center; gap: 24px; margin: 16px 0 20px;
+             font-size: 0.9rem; color: #444; }
+  .statbar b { font-size: 1.15rem; display: block; text-align: center; color: #1a1a1a; }
+  .dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 18px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: #ddd; }
+  .dot.done-right { background: #27ae60; }
+  .dot.done-wrong { background: #c0392b; }
+  .dot.current { background: #f1c40f; }
+  .card { background: #fff; border: 1px solid #e8e4dc; border-radius: 14px;
+          padding: 22px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+  .qnum { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 8px; }
+  .qtext { font-size: 1.05rem; line-height: 1.5; margin-bottom: 18px; }
+  .opt { display: block; width: 100%; text-align: left; margin: 8px 0; padding: 13px 15px;
+         border: 1.5px solid #ddd6ca; border-radius: 10px; background: #fdfcfa;
+         font-size: 0.95rem; line-height: 1.35; cursor: pointer; transition: all .12s; }
+  .opt:hover { border-color: #b8ae9c; }
+  .opt.correct { border-color: #27ae60; background: #eafaf0; }
+  .opt.wrong { border-color: #c0392b; background: #fdeeec; }
+  .opt:disabled { cursor: default; opacity: 1; }
+  .opt.faded { opacity: 0.45; }
+  .why { margin-top: 16px; padding: 14px 16px; background: #f6f2ea; border-radius: 10px;
+         font-size: 0.9rem; line-height: 1.5; display: none; }
+  .why b { color: #c0392b; }
+  .deepbtn { margin-top: 10px; background: none; border: none; color: #8a6d3b; font-size: 0.85rem;
+             cursor: pointer; text-decoration: underline; padding: 0; }
+  .deep { margin-top: 10px; font-size: 0.88rem; line-height: 1.55; color: #333; display: none;
+          border-top: 1px dashed #d8cfc0; padding-top: 10px; }
+  .nextbtn { margin-top: 16px; width: 100%; padding: 13px; border: none; border-radius: 10px;
+             background: #1a1a1a; color: #fff; font-size: 0.95rem; cursor: pointer; display: none; }
+  .doneCard { text-align: center; padding: 30px 22px; }
+  .bigscore { font-size: 2.2rem; margin: 10px 0; }
+  .share { margin-top: 18px; padding: 12px 22px; border: 1.5px solid #1a1a1a; background: none;
+           border-radius: 10px; font-size: 0.9rem; cursor: pointer; }
+  .comeback { color: #777; font-size: 0.85rem; margin-top: 14px; }
+  footer { text-align: center; margin-top: 22px; font-size: 0.75rem; color: #aaa; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Daily <span>Sharp</span></h1>
+    <div class="sub">Three questions a day keeps the brain awake</div>
+  </header>
+  <div class="statbar">
+    <div><b id="streak">0</b>streak 🔥</div>
+    <div><b id="total">0</b>lifetime ✓</div>
+    <div><b id="daynum">–</b>day #</div>
+  </div>
+  <div class="dots" id="dots"></div>
+  <div id="stage"></div>
+  <footer>Same three questions for everyone, every day.<br>Score lives only in your browser. New set at midnight.</footer>
+</div>
+
+<script>
+const BANK = [
+ {q:"WW2 engineers study bombers returning from missions, riddled with bullet holes in the wings and tail. Where should they add armor?",
+  o:["Where the bullet holes are","Where there are NO holes","Spread evenly across the plane"], c:1, n:"Survivorship bias",
+  w:"You only see the planes that MADE IT BACK. Holes in wings and tail are survivable — that's why those planes came home. The planes hit in the engine or cockpit never returned to be studied. Armor the untouched spots: they mark the fatal hits. (Abraham Wald, 1943 — he really did this.)"},
+ {q:"A fund manager beats the market 5 years straight and is on every magazine cover. What's the smartest bet about his NEXT 5 years?",
+  o:["He'll keep outperforming — proven skill","He'll perform closer to average","He'll crash — luck always reverses"], c:1, n:"Regression to the mean",
+  w:"Extreme results are usually skill PLUS luck. The skill may stay; the luck, by definition, doesn't repeat. So extremes drift back toward normal — not because luck 'reverses' (that's the gambler's fallacy, option c) but because lightning rarely strikes twice in the same spot. Magazine-cover performance is usually the peak, which is exactly why he's on the cover."},
+ {q:"A stranger outside the arena offers you a ticket to tonight's sold-out concert for a quarter of face value. Best first question to ask yourself?",
+  o:["How lucky am I?","Why is someone selling THIS cheap when demand is THIS high?","How do I pay before he changes his mind?"], c:1, n:"Adverse selection",
+  w:"When something is suspiciously cheap in a market with plenty of buyers, the price IS the information: fake ticket, obstructed view, something you can't see yet. Deals nobody else wants have usually been inspected and rejected by people with more information than you. The cheaper the offer relative to obvious demand, the more you should ask what the seller knows."},
+ {q:"You're 45 minutes into a 2-hour movie and it's genuinely bad. You paid 150 kr. What's the rational move?",
+  o:["Stay — you paid for it","Leave — the money is gone either way","Stay, but check your phone"], c:1, n:"Sunk cost fallacy",
+  w:"The 150 kr is gone whether you stay or leave — it can't vote anymore. The only real question is: what's the best use of the NEXT 75 minutes? Companies burn millions this way ('we've already invested so much in this project'). Money spent is never a reason to spend time too."},
+ {q:"A disease affects 1 in 1,000 people. A test for it is 99% accurate. You test positive. Roughly what's the chance you actually have it?",
+  o:["About 99%","About 50%","About 9%"], c:2, n:"Base rate neglect",
+  w:"Imagine 1,000 people: 1 truly sick (test catches them), but ~10 healthy people get FALSE positives (1% of 999). So of ~11 positives, only 1 is real — about 9%. The 99% accuracy feels overwhelming until you remember how rare the disease was to begin with. Doctors get this wrong constantly."},
+ {q:"A roulette wheel lands red five times in a row. What's the smartest bet on the next spin?",
+  o:["Black — it's 'due'","Red — it's 'hot'","Neither is better than the other"], c:2, n:"Gambler's fallacy",
+  w:"The wheel has no memory. Every spin is a fresh ~50/50 (minus the house's green zero). 'Due' and 'hot' are both stories your pattern-hungry brain tells about independent events. The casino built its entire business on people believing one or the other."},
+ {q:"New in town for one year. You've found a restaurant you like. How often should you try somewhere new instead?",
+  o:["Never — you found your spot","Often at first, less over time","Always — variety is king"], c:1, n:"Explore vs. exploit",
+  w:"Early on, information is worth more than a good meal — every experiment might upgrade ALL your future dinners. As time runs out, exploring pays less because there are fewer future dinners left to improve. So: explore early, exploit late. The same math runs drug trials, ad algorithms — and ice fishing."},
+ {q:"Choice: 1 million kr today, or 1 öre that doubles every day for 30 days. Which is worth more?",
+  o:["The million, easily","The doubling öre — by a lot","Roughly the same"], c:1, n:"Compounding",
+  w:"One öre doubling 30 times is 2^30 öre ≈ 10.7 million kr. Doubling feels slow at the start (day 10: ~10 kr) then explodes (day 30: +5 million in one day). Human intuition is linear; compounding is exponential — which is why people underestimate both savings AND debt."},
+ {q:"Salary negotiation. The employer asks: 'What do you want?' Naming a number first will most likely…",
+  o:["Weaken you — never go first","Anchor the talk around YOUR number","Make no difference"], c:1, n:"Anchoring",
+  w:"The first number on the table becomes the reference point everything adjusts from — even when everyone knows it's just an opening. Studies show final agreements land measurably closer to whoever anchored first (if their number was ambitious but defensible). 'Never name a number first' is folk wisdom; the evidence mostly says the opposite."},
+ {q:"A city makes bike helmets mandatory. Cyclist head injuries per accident drop — but total accidents rise. Most likely explanation?",
+  o:["Coincidence","Protected people take more risk","Helmets impair vision"], c:1, n:"Risk compensation",
+  w:"Safety measures change behavior: feeling protected, people ride faster, drivers pass closer. Some of every safety gain gets 'spent' on extra risk. It's why safety tools should sell traceability or damage-limitation — never invincibility. (Same reason antilock brakes didn't reduce crashes as much as predicted: people just braked later.)"},
+ {q:"You won a free ticket to a concert tonight. A friend offers you 800 kr to cover his shift instead. Going to the concert 'costs' you…",
+  o:["Nothing — the ticket was free","800 kr","Only the bus fare"], c:1, n:"Opportunity cost",
+  w:"The true cost of anything is the best alternative you give up. The ticket was free; the evening was not — it had an 800 kr offer standing on it. Free things routinely make people forget their time has a price. (This is also why 'free' shipping thresholds make people overspend.)"},
+ {q:"A call center starts ranking staff purely by 'calls handled per hour'. Six months later, what's the most likely outcome?",
+  o:["Better service, faster","Staff hang up quickly, problems unsolved, metric looks great","Nothing changes"], c:1, n:"Goodhart's law",
+  w:"'When a measure becomes a target, it ceases to be a good measure.' People optimize what's counted, not what's meant. Calls get shorter by transferring problems, hanging up, skipping hard cases. Every metric you attach money or status to WILL be gamed — design metrics assuming it."},
+ {q:"A gym's wall is covered in dramatic before/after photos. What does this tell you about the average member's results?",
+  o:["The program clearly works","Almost nothing","It works, but only for beginners"], c:1, n:"Selection bias",
+  w:"You're seeing the best outcomes, hand-picked from thousands. The wall shows the maximum, not the average — and says nothing about the hundreds who quit in February. Testimonials, app-store reviews and success-story TikToks all share this flaw: the failures never pose for the photo."},
+ {q:"After a market crash, every analyst on TV explains why it was 'obviously coming'. Where were these warnings before?",
+  o:["Hidden by the media","Mostly nonexistent — the past only looks predictable afterwards","Ignored by stupid investors"], c:1, n:"Hindsight bias",
+  w:"Once you know the outcome, your brain quietly rewrites history so it 'had' to happen — and you can't un-know it. Before the crash there were a hundred signals pointing in every direction; afterwards, memory keeps only the ones that fit. This is why traders keep written journals: the log remembers what you actually believed at the time."},
+ {q:"Coin flip offer: heads you win 1,500 kr, tails you lose 1,000 kr. Most people refuse. Mathematically, the offer is…",
+  o:["Bad — you can lose","Good — worth +250 kr per flip on average","Neutral"], c:1, n:"Loss aversion",
+  w:"Expected value: (0.5 × 1500) − (0.5 × 1000) = +250 kr. But losses FEEL about twice as heavy as equal gains, so the flip feels bad despite being profitable. Refusing one flip is defensible (variance hurts); refusing many repeated +EV flips is how people stay poor safely."},
+ {q:"To spread risk, an investor buys five different tech stocks instead of one. How diversified is he?",
+  o:["Well — five is plenty","Barely — they'll mostly rise and fall together","Perfectly"], c:1, n:"Correlation vs. diversification",
+  w:"Diversification isn't about counting eggs — it's about baskets that don't fall together. Five tech stocks crash as one in a tech winter. Real spreading means assets that respond DIFFERENTLY to the same event. Counting positions instead of correlations is diversification theater."},
+ {q:"A flight is about to depart with empty seats. Someone offers 400 kr for a seat that 'costs' 2,000 kr. Should the airline take it?",
+  o:["No — it's below cost","Yes — the seat flies anyway; 400 kr beats 0","Only if fuel is cheap"], c:1, n:"Marginal thinking",
+  w:"The plane flies regardless; the extra passenger costs almost nothing (a snack, a few kg of fuel). The 2,000 kr 'cost' is an average including the plane and crew — already spent. Decisions should weigh MARGINAL cost against marginal revenue: 400 kr against ~50 kr, an easy yes. Averages lie; margins decide."},
+ {q:"You believe X strongly. You search online for 'evidence that X is true'. What have you actually tested?",
+  o:["Whether X is true","Whether supporting arguments for X exist (they always do)","Both"], c:1, n:"Confirmation bias",
+  w:"Supporting evidence exists for EVERYTHING — that's why the search always 'succeeds'. A real test hunts for the strongest case AGAINST your belief and sees if it survives. Scientists call it falsification; traders call it a judge window. If you only look for confirmation, you'll always find it, and learn nothing."},
+ {q:"Two hospitals: one delivers 5 babies a day, one delivers 50. Which more often has days where over 70% of babies are boys?",
+  o:["The big one","The small one","Equal"], c:1, n:"Law of small numbers",
+  w:"Small samples swing wildly — 4 boys out of 5 happens all the time; 35 out of 50 almost never. Extreme percentages live where the sample is small. This is why a strategy looks god-tier after 8 trades, why tiny schools top the rankings, and why 'n=13' should never convince anyone of anything."},
+ {q:"Colonial India: the government pays a bounty for every dead cobra, hoping to reduce them. What happened?",
+  o:["Cobras eliminated","People started BREEDING cobras for the bounty","Nothing measurable"], c:1, n:"Incentives (the Cobra Effect)",
+  w:"People respond to the incentive as written, not as intended. Breeding cobras paid better than hunting them; when the program was scrapped, breeders released their stock — MORE cobras than before. Every reward system gets read literally by someone. Ask: 'how would a clever, lazy person farm this?' before launching any bounty."},
+ {q:"The same person grinds in the gym for years but quits every diet in three weeks. Most likely difference?",
+  o:["Discipline only works for exercise","The gym gives fast, visible feedback; diets pay off slowly and invisibly","Diets are physically harder"], c:1, n:"Feedback latency",
+  w:"Persistence tracks how fast the scoreboard updates. Lifting shows numbers weekly — one more rep, one more kilo. A diet's results hide for months behind water weight and noise. Same person, same discipline, different feedback speed. Want to stick to something? Build a faster scoreboard, not a stronger will."},
+ {q:"Sweden sells timber to Italy, Italy sells wine to Sweden. Who's winning this exchange?",
+  o:["The better negotiator","Both — that's the only reason it keeps happening","Whoever exports more"], c:1, n:"Positive-sum games",
+  w:"Voluntary trade happens only when BOTH sides value what they get more than what they give — otherwise someone walks away. Not everything is a pie to split; most economic activity BAKES pie. Confusing positive-sum games for zero-sum ones (trade, immigration, colleagues' success) is one of the most expensive mental errors there is."},
+ {q:"A lottery ticket costs 50 kr. The jackpot is 10 million with odds of 1 in 5 million. On average, each ticket returns…",
+  o:["About 2 kr — terrible deal","About 50 kr — break-even","Can't be calculated"], c:0, n:"Expected value",
+  w:"EV = 10,000,000 ÷ 5,000,000 = 2 kr per 50 kr ticket (ignoring small prizes). You pay 50 for something worth ~2 — a 96% loss on average. People buy the DREAM, which is a real product, just not a financial one. Knowing the EV lets you at least price the dream honestly."},
+ {q:"Country A: citizens must opt IN to be organ donors — 15% sign up. Country B: everyone's a donor unless they opt OUT — 90% stay in. The difference is mostly…",
+  o:["Culture and values","The power of the default option","Better advertising in B"], c:1, n:"Defaults & friction",
+  w:"Same humans, opposite outcomes — because most people take whatever path requires no action. The default isn't neutral; it's the most powerful setting in any system. Design your own defaults (savings auto-transfer, gym bag packed, phone in another room) and willpower becomes almost unnecessary."}
+];
+
+const DEEP = [
+"Wald's insight generalizes: whenever you study 'winners' — surviving companies, successful traders, five-star reviews — you're studying a filtered sample, and the filter is invisible. The dead data never reports. Practical uses: when someone shows results, ask 'what happened to everyone who tried this and ISN'T in the sample?' Business books built on interviewing successful CEOs, fitness transformations, 'I quit my job and it worked out' stories — all wings-and-tail data. The most informative dataset is usually the one nobody collected: the failures. This is why honest experiments pre-register — so the failures can't quietly vanish from the record.",
+"The deeper mechanism: any measured outcome = true skill + noise. When you SELECT the extreme (best fund, hottest streak, record season), you've selected for lucky noise as much as skill — so the next measurement, with fresh noise, lands closer to the skill level alone. This explains the 'Sports Illustrated cover curse', why sequels disappoint, why punishing a bad performance 'works' and praising a good one 'backfires' (both would have regressed anyway — a trap that teaches instructors to punish). Rule of thumb: the more extreme the result and the noisier the domain, the harder the snap-back.",
+"Markets with informed sellers and uninformed buyers develop a 'lemons problem' (Akerlof's Nobel): bad goods drive out good, because sellers of good items won't accept the suspicious-low price that buyers offer to protect themselves. Where you meet it: used cars, cheap flights with brutal layovers, job candidates 'available immediately', insurance (sick people buy more of it — so insurers must price for that), and order books — a fill that comes TO you easily is often one you shouldn't want. The question 'why am I being offered this?' is worth real money for life.",
+"The psychology behind it: abandoning means admitting the resource is lost, and loss hurts twice as much as gain feels good — so we escalate instead. Governments finish doomed megaprojects ('we've come too far to stop'), people stay years in wrong careers and relationships because of the years already spent. The clean test: 'knowing what I know now, would I START this today?' If no, the only question is exit cost, never entry cost. Note the mirror trap: quitting things that are merely HARD by calling them sunk costs — the test asks about information, not about pain.",
+"The formal tool is Bayes' theorem: evidence updates a PRIOR, and rare priors need overwhelming evidence. Where it bites: cancer screenings (most positives in young people are false), security alarms (almost all are false because intrusions are rare), spotting 'genius' traders (in a sea of gamblers, an 8-win streak is probably luck), courtroom DNA statistics. The habit worth training: before asking 'how accurate is the test?', ask 'how common is the thing being tested for?' — the base rate does more work than the test's accuracy in almost every real case.",
+"Independence is the key concept: the wheel's past leaves no trace on its future. But note the OPPOSITE error too — in games with memory (card counting in blackjack, a wearing-out machine, human opponents), past results DO matter. Wisdom is knowing which world you're in: coin-flip worlds (streaks mean nothing) versus momentum worlds (streaks carry information). Most gambling machines are memoryless; most human systems have memory. Confusing the two in either direction is expensive: seeing patterns in roulette OR ignoring patterns in a rigged game.",
+"The multi-armed-bandit problem, formally — and its solutions all share one shape: explore in proportion to remaining future. Young in a career? Sample widely. Two years left in a city? Exploit the known favorites. It also explains institutional behavior: startups explore (nothing to exploit yet), incumbents exploit (exploration cannibalizes profits) — and die when the world shifts. Personal version: the biggest exploration failures aren't bad picks, they're never sampling at all — staying with the first restaurant, first strategy, first job that cleared 'good enough'. Competition-aware bonus: prefer exploring where fewer others already have (trawled waters carry no fish).",
+"The rice-on-chessboard math: 2^30 ≈ a billion grains by square 30. Human error is systematic: we extrapolate the RECENT slope, but exponentials keep changing slope. Consequences: pandemics look containable two weeks before they explode; savings look pointless for a decade then suddenly dominate; debt at 20% quietly doubles in 3.5 years; skills compound the same way (1% better daily = 37x in a year — the math behind 'boring consistency'). The practical rule: for anything that grows by percentage, compute doubling time (72 ÷ rate). If you're not doing the division, your intuition is lying to you.",
+"Anchoring works even with absurd anchors — studies where a wheel of fortune spins before people estimate UN membership shift answers by double digits. Defense: decide your number BEFORE hearing theirs, in writing. Offense: go first when you have information, with an ambitious-but-defensible figure; the discussion then happens on your terrain. It's also why list prices exist ('was 2000, now 990'), why menus have one absurdly expensive dish (making the rest look reasonable), and why the first project estimate someone says out loud tends to become the deadline.",
+"Peltzman's studies of seatbelt laws started this field: fatalities per accident fell, accidents rose. The gain is real but partly consumed. Design lesson: safety interventions work best when INVISIBLE to the protected (structural road changes beat driver warnings) or when they limit damage without changing the feeling of risk. Personal version: a stop-loss can make you take trades you shouldn't; insurance can make you careless; a helmet can make you bold. The tool isn't wrong — but audit what the feeling of protection does to your behavior, because some of the armor's value is always spent buying extra risk.",
+"Economists call visible money 'explicit cost' and foregone alternatives 'implicit cost' — and only the second one is ever hidden. The examples that matter: holding cash through inflation (the cost is the investing you didn't do), a degree's true price (tuition PLUS four years of foregone salary), meetings (30 people × 1 hour = a person-week), and attention — every hour of scrolling is priced in whatever you'd have built instead. The habit: when anything says 'free', ask 'what does the TIME cost?' The most expensive things in most lives were technically free.",
+"Named for a British colonial measure in India, generalized by Goodhart (economist) and Campbell (psychologist) independently — it's that universal. Soviet nail factories measured by weight made giant useless nails; measured by count, thousands of tiny ones. Schools teaching to the test, hospitals refusing risky patients to protect mortality stats, engineers gaming velocity points. Design defenses: pair every metric with a counter-metric (speed AND quality), rotate metrics, measure outcomes not activities, and keep some evaluation human and holistic. Any single number left in charge will eventually be gamed — usually by good people responding rationally.",
+"Selection bias is survivorship bias's broader family: ANY non-random path from reality to your dataset poisons conclusions. Online reviews (angry and delighted people write; the satisfied middle stays silent), polls (who answers unknown numbers?), 'studies show' (which studies got published? — positive results, mostly: publication bias), your social feed (algorithmically selected outrage), even your memories (the vivid survives, the routine vanishes). First question for any data: 'what was the path from the world to this sample, and who fell off along the way?'",
+"Fischhoff's experiments: tell people an outcome, and they misremember their own earlier predictions toward it — 'creeping determinism'. Costs: we judge decisions by results instead of by the information available at the time (punishing good bets that failed, promoting bad bets that lucked out), we learn wrong lessons from history, and experts sound wise explaining yesterday while predicting nothing. Antidotes: write predictions down BEFORE outcomes (the whole point of pre-registration), run decision post-mortems on process not outcome, and distrust anyone who was 'never surprised'.",
+"Kahneman and Tversky measured it: losses weigh roughly 2-2.5x equivalent gains. Downstream effects: the disposition effect (selling winners fast, riding losers long — backwards from optimal), insurance overbuying for small risks, the endowment effect (once it's YOURS, its price doubles), and status-quo paralysis. The professional's trick: aggregate. One flip is scary; a hundred +EV flips is a business. Think in portfolios and repeated games, not single events — variance that terrifies per-event washes out per-thousand. And when a loss does land: the sting is a feeling, not information.",
+"The technical measure is correlation: +1 means assets move together (five tech stocks ≈ one big bet), 0 means unrelated, negative means offsetting. True diversification hunts LOW correlation: stocks + bonds + real assets + skills + income streams. The catch that ruins portfolios: correlations SPIKE in crises — in a real crash, 'uncorrelated' assets all fall together because everyone sells everything (2008's lesson). Beyond money: career diversification (skills that don't all depend on one industry), and the reason 'don't work and invest in the same company' is iron law.",
+"Thinking at the margin is arguably THE core economist's move: ignore averages and totals, compare the NEXT unit's cost against its benefit. Why last-minute standby tickets exist, why software has 90% margins (marginal copy ≈ free), why 'we already have the meeting room booked' shouldn't force a useless meeting, why one more hour of studying at 02:00 is worth less than sleep. Common error in both directions: average-cost thinking rejects profitable marginal deals; but watch cumulative creep — a thousand individually-rational marginal decisions can sum to an irrational total (every 'just one more' ever).",
+"Wason's experiments showed people test rules by seeking confirming cases — scientific method had to be INVENTED because brains don't do it naturally. Modern amplifier: recommendation algorithms learn your beliefs and feed them back, building echo chambers industrially. Working defenses: steelman the other side (argue it so well its holders would applaud), actively search 'evidence against X', befriend smart people who disagree, and set kill criteria for your beliefs in advance ('what result would change my mind?'). A belief you can't imagine evidence against isn't knowledge — it's identity.",
+"Kahneman/Tversky again: people treat small samples as miniature populations ('the law of small numbers' was their joke name). Where it bites: 8-trade strategies, 3-review restaurants, small-school rankings (they top AND bottom league tables — extreme variance, not extreme quality), A/B tests stopped at the first exciting result, and every 'my grandfather smoked and lived to 95'. The working rule: before believing any percentage, find n. Under ~30, treat it as an anecdote; under ~300, as a hint; real confidence lives in the thousands. Variance shrinks with the square root of n — halving noise costs 4x the data.",
+"The general law: people optimize the incentive AS IMPLEMENTED, not as intended — and clever-lazy beats diligent-honest at finding the gap. Wells Fargo's fake accounts (bonuses per account opened), Hanoi's rat-tail bounty (same cobra story, rats), bug bounties breeding planted bugs, sales teams stuffing quarter-end. Design tools: reward outcomes not activities, delay rewards until results are verifiable, cap the farmable, red-team your own scheme ('how would I abuse this?') before launch. And when you SEE weird behavior in any organization, don't ask 'why are they stupid?' — ask 'what incentive makes this smart?'",
+"A useful one to notice in yourself: compare your gym persistence against your project-hopping. The science behind it: operant conditioning needs tight feedback loops; delay between action and consequence weakens learning roughly exponentially. It's why slot machines (instant) beat index funds (decadal) for engagement, why smoking's 30-year price tag deters nobody, why language apps gamify streaks. Engineering your life with it: attach fast proxy-metrics to slow goals (weekly measurements toward yearly outcomes), make invisible progress visible (logs, graphs, streaks), and pick projects whose scoreboards update at the speed your motivation needs.",
+"Ricardo's comparative advantage goes further: trade benefits both sides EVEN IF one side is better at everything, because relative efficiency differs. That's the deep reason specialization built civilization. Zero-sum instincts evolved for splitting carcasses and misfire on modern economies: seeing immigration as job-theft, colleague success as your loss, negotiations as war. Real zero-sum games exist (poker, litigation, market microstructure — ask anyone's prediction-market ledger), so the skill is classification: 'is this pie fixed or bakeable?' Treating positive-sum as zero-sum leaves money on tables; the reverse gets you exploited. Classify first, then play.",
+"Full EV includes small prizes (real lotteries return ~50%, still terrible) — but the concept scales far beyond lotteries: every decision is a probability-weighted average of outcomes. Insurance is negative-EV for you (that's the insurer's margin) yet RATIONAL for ruin-sized risks — which reveals EV's limit: it assumes you survive to play again. Ruin breaks the averaging (a 99% win-chance bet that kills you on the loss is a bad bet at any odds). So: maximize EV for repeatable, survivable bets; respect ruin for the rest. That pair of rules is most of gambling theory, insurance, and position sizing in one breath.",
+"Thaler and Sunstein built 'nudge' economics on this: defaults decide outcomes because action requires energy and attention is scarce. Pension auto-enrollment lifted savings rates 40+ points — same humans, new default. Subscriptions monetize the asymmetry (joining is one click, cancelling is a phone call). Personal engineering: make good behavior the zero-effort path (investments auto-drafted on payday, fruit on the counter, phone charging in another room, gym clothes packed the night before) and make bad behavior cost clicks (delete the app, don't just resolve to open it less). Willpower is for emergencies; defaults are for life."
+];
+
+// Optional visuals: keyed by BANK index; where:'q' shows with the question, 'w' with the answer.
+const IMG = {
+ 0: { where:'q', svg:`<svg viewBox="0 0 320 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:340px;display:block;margin:0 auto 6px">
+  <g fill="#d8d2c6" stroke="#a89f8d" stroke-width="1.5">
+    <ellipse cx="160" cy="75" rx="18" ry="58"/>
+    <path d="M160 45 L40 82 L40 96 L160 74 Z"/>
+    <path d="M160 45 L280 82 L280 96 L160 74 Z"/>
+    <path d="M160 118 L120 140 L120 147 L160 132 Z"/>
+    <path d="M160 118 L200 140 L200 147 L160 132 Z"/>
+  </g>
+  <circle cx="160" cy="30" r="9" fill="#c9c2b4" stroke="#a89f8d"/>
+  <g fill="#c0392b">
+    <circle cx="70" cy="88" r="3"/><circle cx="95" cy="84" r="3"/><circle cx="118" cy="83" r="3"/>
+    <circle cx="230" cy="86" r="3"/><circle cx="252" cy="90" r="3"/><circle cx="205" cy="82" r="3"/>
+    <circle cx="135" cy="137" r="3"/><circle cx="182" cy="139" r="3"/><circle cx="168" cy="128" r="3"/>
+    <circle cx="163" cy="98" r="3"/><circle cx="156" cy="108" r="3"/>
+  </g>
+  <text x="160" y="12" text-anchor="middle" font-size="10" fill="#777">Bullet holes on RETURNING bombers</text>
+ </svg>`},
+ 4: { where:'w', svg:`<svg viewBox="0 0 320 110" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:340px;display:block;margin:10px auto 0">
+  <text x="10" y="14" font-size="10" fill="#555">1,000 tested → the ~11 who test POSITIVE:</text>
+  <g>
+    <circle cx="35" cy="55" r="12" fill="#c0392b"/>
+    <text x="35" y="59" text-anchor="middle" font-size="9" fill="#fff">sick</text>
+    <circle cx="75" cy="55" r="12" fill="#e8b84b"/><circle cx="105" cy="55" r="12" fill="#e8b84b"/>
+    <circle cx="135" cy="55" r="12" fill="#e8b84b"/><circle cx="165" cy="55" r="12" fill="#e8b84b"/>
+    <circle cx="195" cy="55" r="12" fill="#e8b84b"/><circle cx="225" cy="55" r="12" fill="#e8b84b"/>
+    <circle cx="255" cy="55" r="12" fill="#e8b84b"/><circle cx="285" cy="55" r="12" fill="#e8b84b"/>
+    <circle cx="90" cy="85" r="12" fill="#e8b84b"/><circle cx="120" cy="85" r="12" fill="#e8b84b"/>
+  </g>
+  <text x="200" y="90" font-size="10" fill="#555">yellow = healthy, false alarms</text>
+  <text x="10" y="105" font-size="10" fill="#777">1 real case among ~11 positives ≈ 9%</text>
+ </svg>`},
+ 7: { where:'w', svg:`<svg viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:340px;display:block;margin:10px auto 0">
+  <line x1="30" y1="110" x2="310" y2="110" stroke="#bbb" stroke-width="1"/>
+  <line x1="30" y1="110" x2="30" y2="10" stroke="#bbb" stroke-width="1"/>
+  <path d="M30 109 C 120 108, 200 105, 240 80 C 265 62, 285 30, 300 12" fill="none" stroke="#c0392b" stroke-width="2.5"/>
+  <line x1="30" y1="100" x2="300" y2="70" stroke="#999" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <circle cx="130" cy="107" r="3" fill="#c0392b"/>
+  <text x="130" y="98" text-anchor="middle" font-size="9" fill="#777">day 10: ~10 kr</text>
+  <circle cx="300" cy="12" r="3" fill="#c0392b"/>
+  <text x="262" y="14" text-anchor="end" font-size="9" fill="#777">day 30: 10.7 million</text>
+  <text x="292" y="60" text-anchor="end" font-size="9" fill="#999">what intuition expects</text>
+  <text x="170" y="125" text-anchor="middle" font-size="10" fill="#555">Doubling looks flat… until it doesn't</text>
+ </svg>`}
+};
+
+const $ = id => document.getElementById(id);
+const store = {
+  get k() { return JSON.parse(localStorage.getItem("dailysharp") || "{}"); },
+  set(v) { localStorage.setItem("dailysharp", JSON.stringify(v)); }
+};
+
+const DAY0 = Math.floor(new Date(2026, 8, 2).getTime() / 86400000);
+const today = Math.floor((Date.now() - new Date().getTimezoneOffset()*60000) / 86400000);
+const dayNum = today - DAY0 + 1;
+
+function todaysQuestions() {
+  const idx = [];
+  for (let i = 0; i < 3; i++) idx.push(((dayNum - 1) * 3 + i) % BANK.length);
+  return idx;
+}
+
+let s = store.k;
+if (!s.total) s = { total: 0, streak: 0, lastDay: 0, prog: {} };
+if (s.lastDay < today - 1 && s.lastDay !== 0 && !(s.prog[today])) {
+  const missed = today - s.lastDay - 1;
+  if (missed >= 3) s.streak = 0;
+}
+if (!s.prog[today]) s.prog[today] = { answered: [], right: 0 };
+const P = s.prog[today];
+// keep prog small
+Object.keys(s.prog).forEach(k => { if (+k < today - 1) delete s.prog[k]; });
+
+const QIDX = todaysQuestions();
+
+function render() {
+  $("streak").textContent = s.streak;
+  $("total").textContent = s.total;
+  $("daynum").textContent = dayNum;
+  const dots = $("dots"); dots.innerHTML = "";
+  for (let i = 0; i < 3; i++) {
+    const d = document.createElement("div");
+    d.className = "dot" + (i < P.answered.length ? (P.answered[i] ? " done-right" : " done-wrong")
+                   : i === P.answered.length ? " current" : "");
+    dots.appendChild(d);
+  }
+  const stage = $("stage");
+  if (P.answered.length >= 3) { renderDone(stage); return; }
+  const qi = P.answered.length;
+  const Q = BANK[QIDX[qi]];
+  const qimg = (IMG[QIDX[qi]] && IMG[QIDX[qi]].where === 'q') ? IMG[QIDX[qi]].svg : "";
+  stage.innerHTML = `<div class="card">
+    <div class="qnum">Question ${qi+1} of 3</div>
+    ${qimg}
+    <div class="qtext">${Q.q}</div>
+    ${Q.o.map((o,i)=>`<button class="opt" data-i="${i}">${"abc"[i]}) ${o}</button>`).join("")}
+    <div class="why" id="why"></div>
+    <button class="nextbtn" id="next">${qi === 2 ? "See result" : "Next question"}</button>
+  </div>`;
+  stage.querySelectorAll(".opt").forEach(btn => btn.onclick = () => answer(+btn.dataset.i, Q, qi));
+}
+
+function answer(pick, Q, qi) {
+  const right = pick === Q.c;
+  document.querySelectorAll(".opt").forEach((b, i) => {
+    b.disabled = true;
+    if (i === Q.c) b.classList.add("correct");
+    else if (i === pick) b.classList.add("wrong");
+    else b.classList.add("faded");
+  });
+  const why = $("why");
+  const qIdx = QIDX[qi];
+  const wimg = (IMG[qIdx] && IMG[qIdx].where === 'w') ? IMG[qIdx].svg : "";
+  why.innerHTML = `<b>${right ? "Correct" : "Not quite"} — ${Q.n}.</b><br>${Q.w}${wimg}
+    <br><button class="deepbtn" id="deepbtn">Go deeper ↓</button>
+    <div class="deep" id="deep">${DEEP[qIdx]}</div>`;
+  why.style.display = "block";
+  document.getElementById("deepbtn").onclick = () => {
+    const d = document.getElementById("deep");
+    const open = d.style.display === "block";
+    d.style.display = open ? "none" : "block";
+    document.getElementById("deepbtn").textContent = open ? "Go deeper ↓" : "Close ↑";
+    if (!open) { // flag concept for future spaced re-test (v0.3 mechanism)
+      const f = JSON.parse(localStorage.getItem("ds_deep") || "[]");
+      if (!f.includes(qIdx)) { f.push(qIdx); localStorage.setItem("ds_deep", JSON.stringify(f)); }
+    }
+  };
+  $("next").style.display = "block";
+  $("next").onclick = () => {
+    P.answered.push(right);
+    if (right) { P.right++; s.total++; }
+    if (P.answered.length === 3) {
+      if (s.lastDay !== today) { s.streak++; s.lastDay = today; }
+    }
+    store.set(s);
+    render();
+  };
+}
+
+function renderDone(stage) {
+  const squares = P.answered.map(r => r ? "🟩" : "🟥").join("");
+  stage.innerHTML = `<div class="card doneCard">
+    <div>Day ${dayNum} complete</div>
+    <div class="bigscore">${P.right}/3 ${squares}</div>
+    <div>Streak: ${s.streak} 🔥 &nbsp;·&nbsp; Lifetime: ${s.total} ✓</div>
+    <button class="share" id="share">Share result</button>
+    <div class="comeback">New questions at midnight. Come back sharp.</div>
+  </div>`;
+  $("share").onclick = () => {
+    const txt = `Daily Sharp — Day ${dayNum}\n${squares} ${P.right}/3 · streak ${s.streak}🔥`;
+    navigator.clipboard.writeText(txt).then(()=>{ $("share").textContent = "Copied!"; });
+  };
+}
+
+render();
+</script>
+</body>
+</html>
