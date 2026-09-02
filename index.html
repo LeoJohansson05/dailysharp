@@ -5,51 +5,81 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Daily Sharp — 3 questions a day</title>
 <style>
-  :root { color-scheme: light; }
+  :root { color-scheme: light;
+    --ink: #17161a; --paper: #f7f5f0; --card: #ffffff; --line: #e6e1d7;
+    --accent: #d9382c; --green: #1f9d55; --gold: #e8b40f; --muted: #8a857c; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-         background: #faf8f4; color: #1a1a1a; min-height: 100vh;
-         display: flex; justify-content: center; padding: 24px 16px; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+         background: radial-gradient(1200px 600px at 50% -10%, #fffdf8 0%, var(--paper) 60%);
+         color: var(--ink); min-height: 100vh;
+         display: flex; justify-content: center; padding: 28px 16px 40px; }
   .app { width: 100%; max-width: 560px; }
-  header { text-align: center; margin-bottom: 20px; }
-  h1 { font-size: 1.6rem; letter-spacing: -0.5px; }
-  h1 span { color: #c0392b; }
-  .sub { color: #777; font-size: 0.85rem; margin-top: 4px; }
-  .statbar { display: flex; justify-content: center; gap: 24px; margin: 16px 0 20px;
-             font-size: 0.9rem; color: #444; }
-  .statbar b { font-size: 1.15rem; display: block; text-align: center; color: #1a1a1a; }
-  .dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 18px; }
-  .dot { width: 10px; height: 10px; border-radius: 50%; background: #ddd; }
-  .dot.done-right { background: #27ae60; }
-  .dot.done-wrong { background: #c0392b; }
-  .dot.current { background: #f1c40f; }
-  .card { background: #fff; border: 1px solid #e8e4dc; border-radius: 14px;
-          padding: 22px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
-  .qnum { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 8px; }
-  .qtext { font-size: 1.05rem; line-height: 1.5; margin-bottom: 18px; }
-  .opt { display: block; width: 100%; text-align: left; margin: 8px 0; padding: 13px 15px;
-         border: 1.5px solid #ddd6ca; border-radius: 10px; background: #fdfcfa;
-         font-size: 0.95rem; line-height: 1.35; cursor: pointer; transition: all .12s; }
-  .opt:hover { border-color: #b8ae9c; }
-  .opt.correct { border-color: #27ae60; background: #eafaf0; }
-  .opt.wrong { border-color: #c0392b; background: #fdeeec; }
-  .opt:disabled { cursor: default; opacity: 1; }
-  .opt.faded { opacity: 0.45; }
-  .why { margin-top: 16px; padding: 14px 16px; background: #f6f2ea; border-radius: 10px;
-         font-size: 0.9rem; line-height: 1.5; display: none; }
-  .why b { color: #c0392b; }
+  header { text-align: center; margin-bottom: 18px; }
+  h1 { font-family: Georgia, "Times New Roman", serif; font-size: 2rem;
+       letter-spacing: -0.5px; font-weight: 700; }
+  h1 span { color: var(--accent); }
+  .sub { color: var(--muted); font-size: 0.85rem; margin-top: 5px; letter-spacing: 0.2px; }
+  .statbar { display: flex; justify-content: center; gap: 10px; margin: 18px 0 20px; }
+  .statbar > div { background: var(--card); border: 1px solid var(--line); border-radius: 999px;
+                   padding: 8px 18px; font-size: 0.68rem; color: var(--muted);
+                   text-transform: uppercase; letter-spacing: 1.2px;
+                   box-shadow: 0 1px 4px rgba(0,0,0,0.04); text-align: center; }
+  .statbar b { font-size: 1.05rem; display: block; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .dots { display: flex; justify-content: center; gap: 10px; margin-bottom: 18px; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; background: #e0dbd1;
+         transition: transform .25s cubic-bezier(.34,1.56,.64,1), background .25s; }
+  .dot.done-right { background: var(--green); }
+  .dot.done-wrong { background: var(--accent); }
+  .dot.current { background: var(--gold); transform: scale(1.35); box-shadow: 0 0 0 4px rgba(232,180,15,.18); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+          padding: 26px 24px; box-shadow: 0 8px 28px rgba(60,50,30,0.07), 0 1px 3px rgba(0,0,0,0.04);
+          animation: rise .35s cubic-bezier(.2,.7,.3,1); }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  .qnum { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1.6px; color: var(--muted);
+          margin-bottom: 10px; font-weight: 600; }
+  .qtext { font-family: Georgia, "Times New Roman", serif; font-size: 1.18rem; line-height: 1.5;
+           margin-bottom: 20px; }
+  .opt { display: block; width: 100%; text-align: left; margin: 9px 0; padding: 14px 16px;
+         border: 1.5px solid var(--line); border-radius: 12px; background: #fdfcf9;
+         font-size: 0.95rem; line-height: 1.4; cursor: pointer;
+         transition: border-color .15s, background .15s, transform .1s; font-family: inherit; color: var(--ink); }
+  .opt:hover { border-color: #c4baa6; transform: translateY(-1px); }
+  .opt:active { transform: scale(0.985); }
+  .opt.correct { border-color: var(--green); background: #ecf9f1; animation: pop .3s cubic-bezier(.34,1.56,.64,1); }
+  .opt.wrong { border-color: var(--accent); background: #fdefed; animation: shake .35s; }
+  @keyframes pop { 0% { transform: scale(1); } 45% { transform: scale(1.025); } 100% { transform: scale(1); } }
+  @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); }
+                     55% { transform: translateX(4px); } 80% { transform: translateX(-2px); } }
+  .opt:disabled { cursor: default; }
+  .opt.faded { opacity: 0.4; }
+  .why { margin-top: 18px; padding: 15px 17px; background: #f6f2e9; border-radius: 12px;
+         font-size: 0.9rem; line-height: 1.55; display: none; animation: rise .3s ease; }
+  .why b { color: var(--accent); }
   .deepbtn { margin-top: 10px; background: none; border: none; color: #8a6d3b; font-size: 0.85rem;
-             cursor: pointer; text-decoration: underline; padding: 0; }
-  .deep { margin-top: 10px; font-size: 0.88rem; line-height: 1.55; color: #333; display: none;
-          border-top: 1px dashed #d8cfc0; padding-top: 10px; }
-  .nextbtn { margin-top: 16px; width: 100%; padding: 13px; border: none; border-radius: 10px;
-             background: #1a1a1a; color: #fff; font-size: 0.95rem; cursor: pointer; display: none; }
-  .doneCard { text-align: center; padding: 30px 22px; }
-  .bigscore { font-size: 2.2rem; margin: 10px 0; }
-  .share { margin-top: 18px; padding: 12px 22px; border: 1.5px solid #1a1a1a; background: none;
-           border-radius: 10px; font-size: 0.9rem; cursor: pointer; }
-  .comeback { color: #777; font-size: 0.85rem; margin-top: 14px; }
-  footer { text-align: center; margin-top: 22px; font-size: 0.75rem; color: #aaa; line-height: 1.6; }
+             cursor: pointer; text-decoration: underline; text-underline-offset: 3px; padding: 0; font-family: inherit; }
+  .deep { margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: #3a362f; display: none;
+          border-top: 1px dashed #d8cfc0; padding-top: 12px; }
+  .nextbtn { margin-top: 18px; width: 100%; padding: 14px; border: none; border-radius: 12px;
+             background: var(--ink); color: #fff; font-size: 0.95rem; font-weight: 600;
+             cursor: pointer; display: none; font-family: inherit; transition: transform .1s, opacity .15s; }
+  .nextbtn:hover { opacity: .92; }
+  .nextbtn:active { transform: scale(0.985); }
+  .doneCard { text-align: center; padding: 34px 24px; }
+  .donehead { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1.6px; color: var(--muted); font-weight: 600; }
+  .sqrow { display: flex; justify-content: center; gap: 8px; margin: 14px 0 4px; }
+  .sq { width: 26px; height: 26px; border-radius: 8px; }
+  .sq.right { background: var(--green); }
+  .sq.wrong { background: var(--accent); }
+  .donestats { color: var(--muted); font-size: 0.9rem; margin-top: 10px; }
+  .donestats b { color: var(--ink); }
+  .bigscore { font-size: 2.4rem; margin: 12px 0; letter-spacing: 2px; }
+  .share { margin-top: 20px; padding: 12px 26px; border: 1.5px solid var(--ink); background: none;
+           border-radius: 999px; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+           font-family: inherit; transition: background .15s, color .15s; }
+  .share:hover { background: var(--ink); color: #fff; }
+  .comeback { color: var(--muted); font-size: 0.85rem; margin-top: 15px; }
+  footer { text-align: center; margin-top: 24px; font-size: 0.75rem; color: #b3ada3; line-height: 1.7; }
 </style>
 </head>
 <body>
@@ -59,9 +89,9 @@
     <div class="sub">Three questions a day keeps the brain awake</div>
   </header>
   <div class="statbar">
-    <div><b id="streak">0</b>streak 🔥</div>
-    <div><b id="total">0</b>lifetime ✓</div>
-    <div><b id="daynum">–</b>day #</div>
+    <div><b id="streak">0</b>streak</div>
+    <div><b id="total">0</b>lifetime</div>
+    <div><b id="daynum">–</b>day</div>
   </div>
   <div class="dots" id="dots"></div>
   <div id="stage"></div>
@@ -165,8 +195,8 @@ const DEEP = [
 "Wason's experiments showed people test rules by seeking confirming cases — scientific method had to be INVENTED because brains don't do it naturally. Modern amplifier: recommendation algorithms learn your beliefs and feed them back, building echo chambers industrially. Working defenses: steelman the other side (argue it so well its holders would applaud), actively search 'evidence against X', befriend smart people who disagree, and set kill criteria for your beliefs in advance ('what result would change my mind?'). A belief you can't imagine evidence against isn't knowledge — it's identity.",
 "Kahneman/Tversky again: people treat small samples as miniature populations ('the law of small numbers' was their joke name). Where it bites: 8-trade strategies, 3-review restaurants, small-school rankings (they top AND bottom league tables — extreme variance, not extreme quality), A/B tests stopped at the first exciting result, and every 'my grandfather smoked and lived to 95'. The working rule: before believing any percentage, find n. Under ~30, treat it as an anecdote; under ~300, as a hint; real confidence lives in the thousands. Variance shrinks with the square root of n — halving noise costs 4x the data.",
 "The general law: people optimize the incentive AS IMPLEMENTED, not as intended — and clever-lazy beats diligent-honest at finding the gap. Wells Fargo's fake accounts (bonuses per account opened), Hanoi's rat-tail bounty (same cobra story, rats), bug bounties breeding planted bugs, sales teams stuffing quarter-end. Design tools: reward outcomes not activities, delay rewards until results are verifiable, cap the farmable, red-team your own scheme ('how would I abuse this?') before launch. And when you SEE weird behavior in any organization, don't ask 'why are they stupid?' — ask 'what incentive makes this smart?'",
-"A useful one to notice in yourself: compare your gym persistence against your project-hopping. The science behind it: operant conditioning needs tight feedback loops; delay between action and consequence weakens learning roughly exponentially. It's why slot machines (instant) beat index funds (decadal) for engagement, why smoking's 30-year price tag deters nobody, why language apps gamify streaks. Engineering your life with it: attach fast proxy-metrics to slow goals (weekly measurements toward yearly outcomes), make invisible progress visible (logs, graphs, streaks), and pick projects whose scoreboards update at the speed your motivation needs.",
-"Ricardo's comparative advantage goes further: trade benefits both sides EVEN IF one side is better at everything, because relative efficiency differs. That's the deep reason specialization built civilization. Zero-sum instincts evolved for splitting carcasses and misfire on modern economies: seeing immigration as job-theft, colleague success as your loss, negotiations as war. Real zero-sum games exist (poker, litigation, market microstructure — ask anyone's prediction-market ledger), so the skill is classification: 'is this pie fixed or bakeable?' Treating positive-sum as zero-sum leaves money on tables; the reverse gets you exploited. Classify first, then play.",
+"A pattern many discover comparing their own gym persistence against abandoned projects. The science behind it: operant conditioning needs tight feedback loops; delay between action and consequence weakens learning roughly exponentially. It's why slot machines (instant) beat index funds (decadal) for engagement, why smoking's 30-year price tag deters nobody, why language apps gamify streaks. Engineering your life with it: attach fast proxy-metrics to slow goals (weekly measurements toward yearly outcomes), make invisible progress visible (logs, graphs, streaks), and pick projects whose scoreboards update at the speed your motivation needs.",
+"Ricardo's comparative advantage goes further: trade benefits both sides EVEN IF one side is better at everything, because relative efficiency differs. That's the deep reason specialization built civilization. Zero-sum instincts evolved for splitting carcasses and misfire on modern economies: seeing immigration as job-theft, colleague success as your loss, negotiations as war. Real zero-sum games exist (poker, litigation, market microstructure), so the skill is classification: 'is this pie fixed or bakeable?' Treating positive-sum as zero-sum leaves money on tables; the reverse gets you exploited. Classify first, then play.",
 "Full EV includes small prizes (real lotteries return ~50%, still terrible) — but the concept scales far beyond lotteries: every decision is a probability-weighted average of outcomes. Insurance is negative-EV for you (that's the insurer's margin) yet RATIONAL for ruin-sized risks — which reveals EV's limit: it assumes you survive to play again. Ruin breaks the averaging (a 99% win-chance bet that kills you on the loss is a bad bet at any odds). So: maximize EV for repeatable, survivable bets; respect ruin for the rest. That pair of rules is most of gambling theory, insurance, and position sizing in one breath.",
 "Thaler and Sunstein built 'nudge' economics on this: defaults decide outcomes because action requires energy and attention is scarce. Pension auto-enrollment lifted savings rates 40+ points — same humans, new default. Subscriptions monetize the asymmetry (joining is one click, cancelling is a phone call). Personal engineering: make good behavior the zero-effort path (investments auto-drafted on payday, fruit on the counter, phone charging in another room, gym clothes packed the night before) and make bad behavior cost clicks (delete the app, don't just resolve to open it less). Willpower is for emergencies; defaults are for life."
 ];
@@ -246,21 +276,25 @@ const P = s.prog[today];
 Object.keys(s.prog).forEach(k => { if (+k < today - 1) delete s.prog[k]; });
 
 const QIDX = todaysQuestions();
+let PRACTICE = null; // {answered:[], right:0} when replaying a finished day
+
+function activeP() { return PRACTICE || P; }
 
 function render() {
   $("streak").textContent = s.streak;
   $("total").textContent = s.total;
   $("daynum").textContent = dayNum;
+  const A = activeP();
   const dots = $("dots"); dots.innerHTML = "";
   for (let i = 0; i < 3; i++) {
     const d = document.createElement("div");
-    d.className = "dot" + (i < P.answered.length ? (P.answered[i] ? " done-right" : " done-wrong")
-                   : i === P.answered.length ? " current" : "");
+    d.className = "dot" + (i < A.answered.length ? (A.answered[i] ? " done-right" : " done-wrong")
+                   : i === A.answered.length ? " current" : "");
     dots.appendChild(d);
   }
   const stage = $("stage");
-  if (P.answered.length >= 3) { renderDone(stage); return; }
-  const qi = P.answered.length;
+  if (A.answered.length >= 3) { PRACTICE = null; renderDone(stage); return; }
+  const qi = A.answered.length;
   const Q = BANK[QIDX[qi]];
   const qimg = (IMG[QIDX[qi]] && IMG[QIDX[qi]].where === 'q') ? IMG[QIDX[qi]].svg : "";
   stage.innerHTML = `<div class="card">
@@ -301,29 +335,34 @@ function answer(pick, Q, qi) {
   };
   $("next").style.display = "block";
   $("next").onclick = () => {
-    P.answered.push(right);
-    if (right) { P.right++; s.total++; }
-    if (P.answered.length === 3) {
+    const A = activeP();
+    A.answered.push(right);
+    if (right) { A.right++; if (!PRACTICE) s.total++; }
+    if (!PRACTICE && A.answered.length === 3) {
       if (s.lastDay !== today) { s.streak++; s.lastDay = today; }
     }
-    store.set(s);
+    if (!PRACTICE) store.set(s);
     render();
   };
 }
 
 function renderDone(stage) {
   const squares = P.answered.map(r => r ? "🟩" : "🟥").join("");
+  const sqhtml = P.answered.map(r => `<div class="sq ${r ? "right" : "wrong"}"></div>`).join("");
   stage.innerHTML = `<div class="card doneCard">
-    <div>Day ${dayNum} complete</div>
-    <div class="bigscore">${P.right}/3 ${squares}</div>
-    <div>Streak: ${s.streak} 🔥 &nbsp;·&nbsp; Lifetime: ${s.total} ✓</div>
+    <div class="donehead">Day ${dayNum} complete</div>
+    <div class="bigscore">${P.right}/3</div>
+    <div class="sqrow">${sqhtml}</div>
+    <div class="donestats">Streak <b>${s.streak}</b> &nbsp;·&nbsp; Lifetime <b>${s.total}</b></div>
     <button class="share" id="share">Share result</button>
     <div class="comeback">New questions at midnight. Come back sharp.</div>
+    <button class="deepbtn" id="practice" style="margin-top:12px">Practice today again (doesn't affect score)</button>
   </div>`;
   $("share").onclick = () => {
     const txt = `Daily Sharp — Day ${dayNum}\n${squares} ${P.right}/3 · streak ${s.streak}🔥`;
     navigator.clipboard.writeText(txt).then(()=>{ $("share").textContent = "Copied!"; });
   };
+  $("practice").onclick = () => { PRACTICE = { answered: [], right: 0 }; render(); };
 }
 
 render();
