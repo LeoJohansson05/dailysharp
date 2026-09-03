@@ -123,9 +123,9 @@
   "concept": "Expected value",
   "model": "claude-opus-5",
   "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
-  "prompt": "Moody cinematic still life, a scratched laminate convenience-store counter at night, a few worn coins and a chewed pencil stub resting on the surface, spotless bare countertop otherwise, humming fluorescent tube overhead casting cold greenish light, rain-streaked window behind glowing faintly with distant street amber, shallow depth of field, dust motes, quiet late-hour emptiness, no signage or displays anywhere, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "prompt": "Cinematic film still, a lone figure in a damp windbreaker seen from behind stepping toward the doorway of a small corner shop on an empty wet street at dusk, warm amber glow spilling from the interior onto rain-slicked asphalt, puddles mirroring cool blue sky, peeling paint, weathered brick, condensation on old glass, muted melancholy palette, shallow depth of field, quiet anticipation, highly detailed, coherent, professional photography/art, no text, no watermark",
   "question": "A lottery ticket costs $5. The jackpot is $10 million with odds of 1 in 10 million. On average, each ticket returns…",
-  "style": "moody cinematic still life"
+  "style": "cinematic film still, rainy dusk"
  },
  "23": {
   "concept": "Defaults & friction",
