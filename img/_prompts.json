@@ -99,9 +99,9 @@
   "concept": "Adverse selection",
   "model": "claude-opus-5",
   "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
-  "prompt": "Cinematic film still at neon-lit dusk outside a large concrete arena, a lone figure in a hooded jacket seen from behind loitering near a shuttered entrance gate, damp pavement mirroring pink and cyan light, faint haze of city drizzle, distant blurred silhouettes queuing far down the plaza, shallow depth of field, moody teal shadows, anamorphic flare, quiet tension, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "prompt": "Cinematic night film still, wide shot of a lone figure in a dark hooded coat standing with back to camera on a wet sidewalk outside a vast concrete arena, curved facade glowing with cool floodlight wash, puddles reflecting amber streetlamps, faint mist and exhaust drifting through cold air, distant blurred silhouettes queueing far away under the overhang, shallow depth of field, moody teal and sodium palette, highly detailed, coherent, professional photography/art, no text, no watermark",
   "question": "A stranger outside the arena offers you a ticket to tonight's sold-out concert for a quarter of face value. Best first question to ask yourself?",
-  "style": "cinematic film still, neon dusk"
+  "style": "cinematic night film still"
  },
  "20": {
   "concept": "Feedback latency",
@@ -123,9 +123,9 @@
   "concept": "Expected value",
   "model": "claude-opus-5",
   "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
-  "prompt": "Moody still life photograph of a blank unmarked lottery slip and a stubby pencil resting on the worn Formica counter of a late-night convenience store, a scattering of loose coins and a crumpled five-dollar-sized paper beside them, buzzing fluorescent tube overhead casting cold greenish light, rain-streaked window glowing with blurred street colors behind, shallow depth of field, quiet anticipatory atmosphere, no people, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "prompt": "Moody cinematic still life, a scratched laminate convenience-store counter at night, a few worn coins and a chewed pencil stub resting on the surface, spotless bare countertop otherwise, humming fluorescent tube overhead casting cold greenish light, rain-streaked window behind glowing faintly with distant street amber, shallow depth of field, dust motes, quiet late-hour emptiness, no signage or displays anywhere, highly detailed, coherent, professional photography/art, no text, no watermark",
   "question": "A lottery ticket costs $5. The jackpot is $10 million with odds of 1 in 10 million. On average, each ticket returns…",
-  "style": "moody still life photograph"
+  "style": "moody cinematic still life"
  },
  "23": {
   "concept": "Defaults & friction",
@@ -179,7 +179,7 @@
   "concept": "Anchoring",
   "model": "claude-opus-5",
   "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
-  "prompt": "Cinematic film still, wide shot of a quiet corporate meeting room seen from behind a seated job candidate in a plain grey blazer, facing an out-of-focus interviewer across a long polished walnut table, empty water glass and closed leather folder between them, late afternoon light slicing through vertical blinds onto the tabletop, cool muted palette, still and tense air, shallow depth of field, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "prompt": "Cinematic film still of an empty modern conference room seen wide from the doorway, one vacant leather chair pulled slightly back from a long polished walnut table, a plain glass of water and a closed folder resting on the surface, late afternoon sun slanting through vertical blinds in hard amber bars across the wall, faint dust motes, cool shadows, quiet tension in the stillness, shallow depth of field, muted teal and bronze palette, highly detailed, coherent, professional photography/art, no text, no watermark",
   "question": "Salary negotiation. The employer asks: 'What do you want?' Naming a number first will most likely…",
   "style": "cinematic film still"
  },
