@@ -80,6 +80,25 @@
   .share:hover { background: var(--ink); color: #fff; }
   .comeback { color: var(--muted); font-size: 0.85rem; margin-top: 15px; }
   footer { text-align: center; margin-top: 24px; font-size: 0.75rem; color: #b3ada3; line-height: 1.7; }
+  .sq { animation: sqin .35s cubic-bezier(.34,1.56,.64,1) backwards; }
+  @keyframes sqin { from { opacity: 0; transform: scale(.3) rotate(-8deg); } to { opacity: 1; transform: none; } }
+  .ptsgain { font-size: 1rem; font-weight: 700; color: var(--green); margin-top: 6px; font-variant-numeric: tabular-nums; }
+  .badge { display: inline-block; margin-top: 12px; padding: 6px 16px; border-radius: 999px;
+           color: #fff; font-size: 0.7rem; font-weight: 700; letter-spacing: 1.5px; }
+  .conf { position: absolute; top: -10px; width: 8px; height: 12px; border-radius: 2px;
+          animation: fall linear forwards; pointer-events: none; }
+  @keyframes fall { to { transform: translateY(340px) rotate(540deg); opacity: 0; } }
+  .doneCard { position: relative; overflow: hidden; }
+  .panel { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px dashed #d8cfc0; animation: rise .3s ease; }
+  .calrow { display: flex; justify-content: center; gap: 5px; }
+  .cal { width: 16px; height: 16px; border-radius: 4px; }
+  .cal.none { background: #eae5db; } .cal.full { background: var(--green); }
+  .cal.part { background: var(--gold); } .cal.zero { background: var(--accent); }
+  .calcap { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 6px; }
+  .statgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px;
+              font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .statgrid b { display: block; font-size: 1.05rem; color: var(--ink); letter-spacing: 0; }
+  .inspop { color: #8a6d3b; font-size: 0.8rem; font-weight: 700; margin-top: 8px; animation: rise .3s ease; }
 </style>
 </head>
 <body>
@@ -90,7 +109,8 @@
   </header>
   <div class="statbar">
     <div><b id="streak">0</b>streak</div>
-    <div><b id="total">0</b>lifetime</div>
+    <div><b id="pts">0</b>points</div>
+    <div><b id="ins">0</b>insights</div>
     <div><b id="daynum">–</b>day</div>
   </div>
   <div class="dots" id="dots"></div>
@@ -109,9 +129,9 @@ const BANK = [
  {q:"A stranger outside the arena offers you a ticket to tonight's sold-out concert for a quarter of face value. Best first question to ask yourself?",
   o:["How lucky am I?","Why is someone selling THIS cheap when demand is THIS high?","How do I pay before he changes his mind?"], c:1, n:"Adverse selection",
   w:"When something is suspiciously cheap in a market with plenty of buyers, the price IS the information: fake ticket, obstructed view, something you can't see yet. Deals nobody else wants have usually been inspected and rejected by people with more information than you. The cheaper the offer relative to obvious demand, the more you should ask what the seller knows."},
- {q:"You're 45 minutes into a 2-hour movie and it's genuinely bad. You paid 150 kr. What's the rational move?",
+ {q:"You're 45 minutes into a 2-hour movie and it's genuinely bad. You paid $15. What's the rational move?",
   o:["Stay — you paid for it","Leave — the money is gone either way","Stay, but check your phone"], c:1, n:"Sunk cost fallacy",
-  w:"The 150 kr is gone whether you stay or leave — it can't vote anymore. The only real question is: what's the best use of the NEXT 75 minutes? Companies burn millions this way ('we've already invested so much in this project'). Money spent is never a reason to spend time too."},
+  w:"The $15 is gone whether you stay or leave — it can't vote anymore. The only real question is: what's the best use of the NEXT 75 minutes? Companies burn millions this way ('we've already invested so much in this project'). Money spent is never a reason to spend time too."},
  {q:"A disease affects 1 in 1,000 people. A test for it is 99% accurate. You test positive. Roughly what's the chance you actually have it?",
   o:["About 99%","About 50%","About 9%"], c:2, n:"Base rate neglect",
   w:"Imagine 1,000 people: 1 truly sick (test catches them), but ~10 healthy people get FALSE positives (1% of 999). So of ~11 positives, only 1 is real — about 9%. The 99% accuracy feels overwhelming until you remember how rare the disease was to begin with. Doctors get this wrong constantly."},
@@ -121,18 +141,18 @@ const BANK = [
  {q:"New in town for one year. You've found a restaurant you like. How often should you try somewhere new instead?",
   o:["Never — you found your spot","Often at first, less over time","Always — variety is king"], c:1, n:"Explore vs. exploit",
   w:"Early on, information is worth more than a good meal — every experiment might upgrade ALL your future dinners. As time runs out, exploring pays less because there are fewer future dinners left to improve. So: explore early, exploit late. The same math runs drug trials, ad algorithms — and ice fishing."},
- {q:"Choice: 1 million kr today, or 1 öre that doubles every day for 30 days. Which is worth more?",
-  o:["The million, easily","The doubling öre — by a lot","Roughly the same"], c:1, n:"Compounding",
-  w:"One öre doubling 30 times is 2^30 öre ≈ 10.7 million kr. Doubling feels slow at the start (day 10: ~10 kr) then explodes (day 30: +5 million in one day). Human intuition is linear; compounding is exponential — which is why people underestimate both savings AND debt."},
+ {q:"Choice: $1 million today, or 1 cent that doubles every day for 30 days. Which is worth more?",
+  o:["The million, easily","The doubling cent — by a lot","Roughly the same"], c:1, n:"Compounding",
+  w:"One cent doubling 30 times is 2^30 cents ≈ $10.7 million. Doubling feels slow at the start (day 10: ~$10) then explodes (day 30: +$5 million in one day). Human intuition is linear; compounding is exponential — which is why people underestimate both savings AND debt."},
  {q:"Salary negotiation. The employer asks: 'What do you want?' Naming a number first will most likely…",
   o:["Weaken you — never go first","Anchor the talk around YOUR number","Make no difference"], c:1, n:"Anchoring",
   w:"The first number on the table becomes the reference point everything adjusts from — even when everyone knows it's just an opening. Studies show final agreements land measurably closer to whoever anchored first (if their number was ambitious but defensible). 'Never name a number first' is folk wisdom; the evidence mostly says the opposite."},
  {q:"A city makes bike helmets mandatory. Cyclist head injuries per accident drop — but total accidents rise. Most likely explanation?",
   o:["Coincidence","Protected people take more risk","Helmets impair vision"], c:1, n:"Risk compensation",
   w:"Safety measures change behavior: feeling protected, people ride faster, drivers pass closer. Some of every safety gain gets 'spent' on extra risk. It's why safety tools should sell traceability or damage-limitation — never invincibility. (Same reason antilock brakes didn't reduce crashes as much as predicted: people just braked later.)"},
- {q:"You won a free ticket to a concert tonight. A friend offers you 800 kr to cover his shift instead. Going to the concert 'costs' you…",
-  o:["Nothing — the ticket was free","800 kr","Only the bus fare"], c:1, n:"Opportunity cost",
-  w:"The true cost of anything is the best alternative you give up. The ticket was free; the evening was not — it had an 800 kr offer standing on it. Free things routinely make people forget their time has a price. (This is also why 'free' shipping thresholds make people overspend.)"},
+ {q:"You won a free ticket to a concert tonight. A friend offers you $200 to cover his shift instead. Going to the concert 'costs' you…",
+  o:["Nothing — the ticket was free","$200","Only the bus fare"], c:1, n:"Opportunity cost",
+  w:"The true cost of anything is the best alternative you give up. The ticket was free; the evening was not — it had a $200 offer standing on it. Free things routinely make people forget their time has a price. (This is also why 'free' shipping thresholds make people overspend.)"},
  {q:"A call center starts ranking staff purely by 'calls handled per hour'. Six months later, what's the most likely outcome?",
   o:["Better service, faster","Staff hang up quickly, problems unsolved, metric looks great","Nothing changes"], c:1, n:"Goodhart's law",
   w:"'When a measure becomes a target, it ceases to be a good measure.' People optimize what's counted, not what's meant. Calls get shorter by transferring problems, hanging up, skipping hard cases. Every metric you attach money or status to WILL be gamed — design metrics assuming it."},
@@ -142,15 +162,15 @@ const BANK = [
  {q:"After a market crash, every analyst on TV explains why it was 'obviously coming'. Where were these warnings before?",
   o:["Hidden by the media","Mostly nonexistent — the past only looks predictable afterwards","Ignored by stupid investors"], c:1, n:"Hindsight bias",
   w:"Once you know the outcome, your brain quietly rewrites history so it 'had' to happen — and you can't un-know it. Before the crash there were a hundred signals pointing in every direction; afterwards, memory keeps only the ones that fit. This is why traders keep written journals: the log remembers what you actually believed at the time."},
- {q:"Coin flip offer: heads you win 1,500 kr, tails you lose 1,000 kr. Most people refuse. Mathematically, the offer is…",
-  o:["Bad — you can lose","Good — worth +250 kr per flip on average","Neutral"], c:1, n:"Loss aversion",
-  w:"Expected value: (0.5 × 1500) − (0.5 × 1000) = +250 kr. But losses FEEL about twice as heavy as equal gains, so the flip feels bad despite being profitable. Refusing one flip is defensible (variance hurts); refusing many repeated +EV flips is how people stay poor safely."},
+ {q:"Coin flip offer: heads you win $150, tails you lose $100. Most people refuse. Mathematically, the offer is…",
+  o:["Bad — you can lose","Good — worth +$25 per flip on average","Neutral"], c:1, n:"Loss aversion",
+  w:"Expected value: (0.5 × $150) − (0.5 × $100) = +$25. But losses FEEL about twice as heavy as equal gains, so the flip feels bad despite being profitable. Refusing one flip is defensible (variance hurts); refusing many repeated +EV flips is how people stay poor safely."},
  {q:"To spread risk, an investor buys five different tech stocks instead of one. How diversified is he?",
   o:["Well — five is plenty","Barely — they'll mostly rise and fall together","Perfectly"], c:1, n:"Correlation vs. diversification",
   w:"Diversification isn't about counting eggs — it's about baskets that don't fall together. Five tech stocks crash as one in a tech winter. Real spreading means assets that respond DIFFERENTLY to the same event. Counting positions instead of correlations is diversification theater."},
- {q:"A flight is about to depart with empty seats. Someone offers 400 kr for a seat that 'costs' 2,000 kr. Should the airline take it?",
-  o:["No — it's below cost","Yes — the seat flies anyway; 400 kr beats 0","Only if fuel is cheap"], c:1, n:"Marginal thinking",
-  w:"The plane flies regardless; the extra passenger costs almost nothing (a snack, a few kg of fuel). The 2,000 kr 'cost' is an average including the plane and crew — already spent. Decisions should weigh MARGINAL cost against marginal revenue: 400 kr against ~50 kr, an easy yes. Averages lie; margins decide."},
+ {q:"A flight is about to depart with empty seats. Someone offers $40 for a seat that 'costs' $400. Should the airline take it?",
+  o:["No — it's below cost","Yes — the seat flies anyway; $40 beats $0","Only if fuel is cheap"], c:1, n:"Marginal thinking",
+  w:"The plane flies regardless; the extra passenger costs almost nothing (a snack, a few kg of fuel). The $400 'cost' is an average including the plane and crew — already spent. Decisions should weigh MARGINAL cost against marginal revenue: $40 against ~$5, an easy yes. Averages lie; margins decide."},
  {q:"You believe X strongly. You search online for 'evidence that X is true'. What have you actually tested?",
   o:["Whether X is true","Whether supporting arguments for X exist (they always do)","Both"], c:1, n:"Confirmation bias",
   w:"Supporting evidence exists for EVERYTHING — that's why the search always 'succeeds'. A real test hunts for the strongest case AGAINST your belief and sees if it survives. Scientists call it falsification; traders call it a judge window. If you only look for confirmation, you'll always find it, and learn nothing."},
@@ -166,9 +186,9 @@ const BANK = [
  {q:"Sweden sells timber to Italy, Italy sells wine to Sweden. Who's winning this exchange?",
   o:["The better negotiator","Both — that's the only reason it keeps happening","Whoever exports more"], c:1, n:"Positive-sum games",
   w:"Voluntary trade happens only when BOTH sides value what they get more than what they give — otherwise someone walks away. Not everything is a pie to split; most economic activity BAKES pie. Confusing positive-sum games for zero-sum ones (trade, immigration, colleagues' success) is one of the most expensive mental errors there is."},
- {q:"A lottery ticket costs 50 kr. The jackpot is 10 million with odds of 1 in 5 million. On average, each ticket returns…",
-  o:["About 2 kr — terrible deal","About 50 kr — break-even","Can't be calculated"], c:0, n:"Expected value",
-  w:"EV = 10,000,000 ÷ 5,000,000 = 2 kr per 50 kr ticket (ignoring small prizes). You pay 50 for something worth ~2 — a 96% loss on average. People buy the DREAM, which is a real product, just not a financial one. Knowing the EV lets you at least price the dream honestly."},
+ {q:"A lottery ticket costs $5. The jackpot is $10 million with odds of 1 in 10 million. On average, each ticket returns…",
+  o:["About $1 — terrible deal","About $5 — break-even","Can't be calculated"], c:0, n:"Expected value",
+  w:"EV = $10,000,000 ÷ 10,000,000 = $1 per $5 ticket (ignoring small prizes). You pay $5 for something worth ~$1 — an 80% loss on average. People buy the DREAM, which is a real product, just not a financial one. Knowing the EV lets you at least price the dream honestly."},
  {q:"Country A: citizens must opt IN to be organ donors — 15% sign up. Country B: everyone's a donor unless they opt OUT — 90% stay in. The difference is mostly…",
   o:["Culture and values","The power of the default option","Better advertising in B"], c:1, n:"Defaults & friction",
   w:"Same humans, opposite outcomes — because most people take whatever path requires no action. The default isn't neutral; it's the most powerful setting in any system. Design your own defaults (savings auto-transfer, gym bag packed, phone in another room) and willpower becomes almost unnecessary."}
@@ -240,9 +260,9 @@ const IMG = {
   <path d="M30 109 C 120 108, 200 105, 240 80 C 265 62, 285 30, 300 12" fill="none" stroke="#c0392b" stroke-width="2.5"/>
   <line x1="30" y1="100" x2="300" y2="70" stroke="#999" stroke-width="1.5" stroke-dasharray="4 3"/>
   <circle cx="130" cy="107" r="3" fill="#c0392b"/>
-  <text x="130" y="98" text-anchor="middle" font-size="9" fill="#777">day 10: ~10 kr</text>
+  <text x="130" y="98" text-anchor="middle" font-size="9" fill="#777">day 10: ~$10</text>
   <circle cx="300" cy="12" r="3" fill="#c0392b"/>
-  <text x="262" y="14" text-anchor="end" font-size="9" fill="#777">day 30: 10.7 million</text>
+  <text x="262" y="14" text-anchor="end" font-size="9" fill="#777">day 30: $10.7M</text>
   <text x="292" y="60" text-anchor="end" font-size="9" fill="#999">what intuition expects</text>
   <text x="170" y="125" text-anchor="middle" font-size="10" fill="#555">Doubling looks flat… until it doesn't</text>
  </svg>`}
@@ -266,6 +286,7 @@ function todaysQuestions() {
 
 let s = store.k;
 if (!s.total) s = { total: 0, streak: 0, lastDay: 0, prog: {} };
+s.pts = s.pts || 0; s.best = s.best || 0; s.hist = s.hist || {};
 if (s.lastDay < today - 1 && s.lastDay !== 0 && !(s.prog[today])) {
   const missed = today - s.lastDay - 1;
   if (missed >= 3) s.streak = 0;
@@ -282,7 +303,8 @@ function activeP() { return PRACTICE || P; }
 
 function render() {
   $("streak").textContent = s.streak;
-  $("total").textContent = s.total;
+  $("pts").textContent = s.pts.toLocaleString();
+  $("ins").textContent = JSON.parse(localStorage.getItem("ds_deep") || "[]").length + "/24";
   $("daynum").textContent = dayNum;
   const A = activeP();
   const dots = $("dots"); dots.innerHTML = "";
@@ -320,17 +342,23 @@ function answer(pick, Q, qi) {
   const qIdx = QIDX[qi];
   const wimg = (IMG[qIdx] && IMG[qIdx].where === 'w') ? IMG[qIdx].svg : "";
   why.innerHTML = `<b>${right ? "Correct" : "Not quite"} — ${Q.n}.</b><br>${Q.w}${wimg}
-    <br><button class="deepbtn" id="deepbtn">Go deeper ↓</button>
+    <br><button class="deepbtn" id="deepbtn">The full story → collect the insight (1 min)</button>
     <div class="deep" id="deep">${DEEP[qIdx]}</div>`;
   why.style.display = "block";
   document.getElementById("deepbtn").onclick = () => {
     const d = document.getElementById("deep");
     const open = d.style.display === "block";
     d.style.display = open ? "none" : "block";
-    document.getElementById("deepbtn").textContent = open ? "Go deeper ↓" : "Close ↑";
-    if (!open) { // flag concept for future spaced re-test (v0.3 mechanism)
-      const f = JSON.parse(localStorage.getItem("ds_deep") || "[]");
-      if (!f.includes(qIdx)) { f.push(qIdx); localStorage.setItem("ds_deep", JSON.stringify(f)); }
+    document.getElementById("deepbtn").textContent = open ? "The full story → collect the insight (1 min)" : "Close ↑";
+    if (!open) { // flag concept for spaced re-test + insight collection
+      const fArr = JSON.parse(localStorage.getItem("ds_deep") || "[]");
+      if (!fArr.includes(qIdx)) {
+        fArr.push(qIdx); localStorage.setItem("ds_deep", JSON.stringify(fArr));
+        $("ins").textContent = fArr.length + "/24";
+        const popEl = document.createElement("div"); popEl.className = "inspop"; popEl.textContent = "+1 insight collected";
+        d.parentNode.insertBefore(popEl, d);
+        setTimeout(() => popEl.remove(), 1800);
+      }
     }
   };
   $("next").style.display = "block";
@@ -340,27 +368,92 @@ function answer(pick, Q, qi) {
     if (right) { A.right++; if (!PRACTICE) s.total++; }
     if (!PRACTICE && A.answered.length === 3) {
       if (s.lastDay !== today) { s.streak++; s.lastDay = today; }
+      if (s.streak > s.best) s.best = s.streak;
+      if (!s.hist[dayNum]) {
+        const mult = 1 + 0.1 * s.streak;
+        s.lastGain = Math.round(A.right * 100 * mult);
+        s.pts += s.lastGain;
+        s.hist[dayNum] = { r: A.right, a: A.answered.slice() };
+      }
     }
     if (!PRACTICE) store.set(s);
     render();
   };
 }
 
+function badgeFor(st) {
+  if (st >= 30) return ["LEGEND","#7c3aed"];
+  if (st >= 14) return ["GOLD STREAK","#b45309"];
+  if (st >= 7)  return ["SILVER STREAK","#64748b"];
+  if (st >= 3)  return ["BRONZE STREAK","#92400e"];
+  return null;
+}
 function renderDone(stage) {
   const squares = P.answered.map(r => r ? "🟩" : "🟥").join("");
-  const sqhtml = P.answered.map(r => `<div class="sq ${r ? "right" : "wrong"}"></div>`).join("");
-  stage.innerHTML = `<div class="card doneCard">
+  const sqhtml = P.answered.map((r,i) => `<div class="sq ${r ? "right" : "wrong"}" style="animation-delay:${i*0.12}s"></div>`).join("");
+  const gain = s.lastGain || 0;
+  const b = badgeFor(s.streak);
+  stage.innerHTML = `<div class="card doneCard" id="donecard">
     <div class="donehead">Day ${dayNum} complete</div>
     <div class="bigscore">${P.right}/3</div>
     <div class="sqrow">${sqhtml}</div>
-    <div class="donestats">Streak <b>${s.streak}</b> &nbsp;·&nbsp; Lifetime <b>${s.total}</b></div>
+    <div class="ptsgain" id="ptsgain">+0 points</div>
+    ${b ? `<div class="badge" style="background:${b[1]}">${b[0]} · ${s.streak} DAYS</div>` : ""}
+    <div class="donestats">Streak <b>${s.streak}</b> &nbsp;·&nbsp; Best <b>${s.best}</b> &nbsp;·&nbsp; Total <b>${s.pts.toLocaleString()}</b> pts</div>
     <button class="share" id="share">Share result</button>
-    <div class="comeback">New questions at midnight. Come back sharp.</div>
-    <button class="deepbtn" id="practice" style="margin-top:12px">Practice today again (doesn't affect score)</button>
+    <div class="comeback">New questions at midnight. Streak multiplier grows daily — miss a day, lose the bonus.</div>
+    <button class="deepbtn" id="progress" style="margin-top:14px">View my progress</button>
+    <div class="panel" id="panel"></div>
+    <button class="deepbtn" id="practice" style="margin-top:10px">Practice today again (doesn't affect score)</button>
   </div>`;
+  // count-up
+  let c = 0; const step = Math.max(1, Math.round(gain/30));
+  const iv = setInterval(() => { c += step; if (c >= gain) { c = gain; clearInterval(iv); }
+    $("ptsgain").textContent = "+" + c + " points" + (s.streak > 1 ? " (x" + (1 + 0.1*s.streak).toFixed(1) + " streak bonus)" : ""); }, 25);
+  // confetti on perfect day
+  if (P.right === 3) {
+    const dc = $("donecard");
+    for (let i = 0; i < 36; i++) {
+      const p = document.createElement("span"); p.className = "conf";
+      p.style.left = (8 + Math.random()*84) + "%";
+      p.style.background = ["#1f9d55","#e8b40f","#d9382c","#3b82f6"][i % 4];
+      p.style.animationDelay = (Math.random()*0.5) + "s";
+      p.style.animationDuration = (0.9 + Math.random()*0.9) + "s";
+      dc.appendChild(p);
+    }
+  }
   $("share").onclick = () => {
-    const txt = `Daily Sharp — Day ${dayNum}\n${squares} ${P.right}/3 · streak ${s.streak}🔥`;
+    const txt = `Daily Sharp — Day ${dayNum}\n${squares} ${P.right}/3 · streak ${s.streak}🔥 · ${s.pts.toLocaleString()} pts`;
     navigator.clipboard.writeText(txt).then(()=>{ $("share").textContent = "Copied!"; });
+  };
+  $("progress").onclick = () => {
+    const panel = $("panel");
+    if (panel.style.display === "block") { panel.style.display = "none"; $("progress").textContent = "View my progress"; return; }
+    const days = Object.keys(s.hist).map(Number).sort((a,b)=>a-b);
+    const played = days.length;
+    const perfect = days.filter(d => s.hist[d].r === 3).length;
+    const answered = played * 3;
+    const correct = days.reduce((t,d) => t + s.hist[d].r, 0);
+    const insights = JSON.parse(localStorage.getItem("ds_deep") || "[]").length;
+    const last14 = [];
+    for (let d = Math.max(1, dayNum-13); d <= dayNum; d++) {
+      const h = s.hist[d];
+      const cls = !h ? "none" : h.r === 3 ? "full" : h.r >= 1 ? "part" : "zero";
+      last14.push(`<div class="cal ${cls}" title="day ${d}"></div>`);
+    }
+    panel.innerHTML = `
+      <div class="calrow">${last14.join("")}</div>
+      <div class="calcap">last 14 days</div>
+      <div class="statgrid">
+        <div><b>${played}</b>days played</div>
+        <div><b>${perfect}</b>perfect days</div>
+        <div><b>${answered ? Math.round(correct/answered*100) : 0}%</b>accuracy</div>
+        <div><b>${s.best}</b>best streak</div>
+        <div><b>${insights}/24</b>insights read</div>
+        <div><b>${s.pts.toLocaleString()}</b>points</div>
+      </div>`;
+    panel.style.display = "block";
+    $("progress").textContent = "Hide progress";
   };
   $("practice").onclick = () => { PRACTICE = { answered: [], right: 0 }; render(); };
 }
