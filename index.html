@@ -98,7 +98,22 @@
   .statgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px;
               font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
   .statgrid b { display: block; font-size: 1.05rem; color: var(--ink); letter-spacing: 0; }
-  .inspop { color: #8a6d3b; font-size: 0.8rem; font-weight: 700; margin-top: 8px; animation: rise .3s ease; }
+  .chip { cursor: pointer; transition: transform .1s; -webkit-tap-highlight-color: transparent; }
+  .chip:active { transform: scale(0.95); }
+  .hintbar { display: none; text-align: center; font-size: 0.82rem; color: #6b6558; line-height: 1.5;
+             background: #f3eee3; border: 1px solid #e2dbc9; border-radius: 10px;
+             padding: 10px 14px; margin: -8px auto 16px; max-width: 480px; animation: rise .25s ease; }
+  .inspop { position: fixed; top: 18%; left: 50%; transform: translateX(-50%);
+            background: #8a6d3b; color: #fff; font-size: 1rem; font-weight: 700;
+            padding: 14px 26px; border-radius: 999px; z-index: 99;
+            box-shadow: 0 8px 24px rgba(90,70,30,.35);
+            animation: toastin .35s cubic-bezier(.34,1.56,.64,1); }
+  .inspop.out { opacity: 0; transform: translateX(-50%) translateY(-12px); transition: all .45s ease; }
+  @keyframes toastin { from { opacity: 0; transform: translateX(-50%) scale(.6); }
+                       to { opacity: 1; transform: translateX(-50%) scale(1); } }
+  .chip.glow { animation: chipglow 1.5s ease; }
+  @keyframes chipglow { 0%,100% { box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+                        30% { box-shadow: 0 0 0 5px rgba(138,109,59,.28); transform: scale(1.08); } }
 </style>
 </head>
 <body>
@@ -108,11 +123,12 @@
     <div class="sub">Three questions a day keeps the brain awake</div>
   </header>
   <div class="statbar">
-    <div><b id="streak">0</b>streak</div>
-    <div><b id="pts">0</b>points</div>
-    <div><b id="ins">0</b>insights</div>
-    <div><b id="daynum">–</b>day</div>
+    <div class="chip" data-hint="streak"><b id="streak">0</b>streak</div>
+    <div class="chip" data-hint="pts"><b id="pts">0</b>points</div>
+    <div class="chip" data-hint="ins"><b id="ins">0</b>insights</div>
+    <div class="chip" data-hint="day"><b id="daynum">–</b>day</div>
   </div>
+  <div class="hintbar" id="hintbar"></div>
   <div class="dots" id="dots"></div>
   <div id="stage"></div>
   <footer>Same three questions for everyone, every day.<br>Score lives only in your browser. New set at midnight.</footer>
@@ -301,6 +317,19 @@ let PRACTICE = null; // {answered:[], right:0} when replaying a finished day
 
 function activeP() { return PRACTICE || P; }
 
+const HINTS = {
+  streak: "STREAK — answer all 3 questions every day. Each streak day adds +10% to the points you earn. Skip 3 days and it resets.",
+  pts: "POINTS — 100 per correct answer, multiplied by your streak bonus. A 10-day streak makes every answer worth double.",
+  ins: "INSIGHTS — after answering, tap \u201cThe full story\u201d to read the deeper explanation. Each one read = 1 insight collected. There are 24.",
+  day: "DAY — which daily set this is. Everyone in the world gets the same 3 questions each day."
+};
+let hintOpen = null;
+document.querySelectorAll(".chip").forEach(ch => ch.onclick = () => {
+  const k = ch.dataset.hint, bar = document.getElementById("hintbar");
+  if (hintOpen === k) { bar.style.display = "none"; hintOpen = null; return; }
+  bar.textContent = HINTS[k]; bar.style.display = "block"; hintOpen = k;
+});
+
 function render() {
   $("streak").textContent = s.streak;
   $("pts").textContent = s.pts.toLocaleString();
@@ -355,9 +384,13 @@ function answer(pick, Q, qi) {
       if (!fArr.includes(qIdx)) {
         fArr.push(qIdx); localStorage.setItem("ds_deep", JSON.stringify(fArr));
         $("ins").textContent = fArr.length + "/24";
-        const popEl = document.createElement("div"); popEl.className = "inspop"; popEl.textContent = "+1 insight collected";
-        d.parentNode.insertBefore(popEl, d);
-        setTimeout(() => popEl.remove(), 1800);
+        const popEl = document.createElement("div"); popEl.className = "inspop";
+        popEl.innerHTML = "&#10003;&nbsp; Insight collected &mdash; " + fArr.length + "/24";
+        document.body.appendChild(popEl);
+        setTimeout(() => popEl.classList.add("out"), 2200);
+        setTimeout(() => popEl.remove(), 2700);
+        const chipEl = document.querySelector('[data-hint="ins"]');
+        chipEl.classList.add("glow"); setTimeout(() => chipEl.classList.remove("glow"), 1600);
       }
     }
   };
