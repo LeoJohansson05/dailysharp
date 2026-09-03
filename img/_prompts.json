@@ -1,0 +1,194 @@
+{
+ "0": {
+  "concept": "Survivorship bias",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Archival 1940s black and white photograph, grainy silver gelatin texture: a four-engine bomber parked on a wet English airfield at dawn, seen wide and from behind, riveted aluminium skin beaded with rain, propellers still, ground crew in overalls standing at a distance as small dark silhouettes near the tail. Low mist, pale flat light, puddles reflecting the fuselage, sandbags and canvas at the field edge, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "WW2 engineers study bombers returning from missions, riddled with bullet holes in the wings and tail. Where should they add armor?",
+  "style": "archival 1940s black and white photograph"
+ },
+ "1": {
+  "concept": "Regression to the mean",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Cinematic film still of a lone silhouetted man in a tailored suit standing with his back to us at the floor-to-ceiling window of a high-rise office at dusk, city towers glowing below, glass reflecting amber light, an empty leather chair and polished dark desk behind him, faint haze, cool blue shadows against warm sunset, shallow depth of field, quiet anticipatory stillness, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "A fund manager beats the market 5 years straight and is on every magazine cover. What's the smartest bet about his NEXT 5 years?",
+  "style": "cinematic film still"
+ },
+ "10": {
+  "concept": "Opportunity cost",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Cinematic film still, wide shot from behind of a lone young figure standing in a dim apartment hallway at dusk, jacket half on, an open doorway spilling warm amber light ahead while a cool blue window glow falls from behind, worn wooden floor, keys on a side table, coat hooks, quiet hesitation in the posture, shallow depth of field, muted teal and gold palette, soft grain, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "You won a free ticket to a concert tonight. A friend offers you $200 to cover his shift instead. Going to the concert 'costs' you…",
+  "style": "cinematic film still"
+ },
+ "11": {
+  "concept": "Goodhart's law",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Cinematic film still of a vast open-plan call center at dusk, endless rows of identical grey cubicles with headsets resting on empty desks, one anonymous seated figure seen from behind under a cold fluorescent grid, low sun bleeding orange through venetian blinds across carpet tiles, faint dust in the air, muted teal and amber palette, wide symmetrical composition, shallow depth at the far wall, quiet institutional atmosphere, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "A call center starts ranking staff purely by 'calls handled per hour'. Six months later, what's the most likely outcome?",
+  "style": "cinematic corporate film still"
+ },
+ "12": {
+  "concept": "Selection bias",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Cinematic film still of an empty gym interior at early morning, one long wall covered in a grid of framed photographs whose figures are softly out of focus and unreadable, matte black rubber flooring, chalk dust hanging in slanted shafts of pale window light, racks of weights receding into shadow, cool blue-grey palette with warm highlights, quiet anticipatory atmosphere, wide symmetrical composition, no people, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "A gym's wall is covered in dramatic before/after photos. What does this tell you about the average member's results?",
+  "style": "cinematic film still"
+ },
+ "13": {
+  "concept": "Hindsight bias",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Cinematic film still of a deserted trading floor at dusk, long rows of empty swivel chairs and dark dormant monitors glowing faintly, scattered paper drifting across the carpet, one distant figure in a rumpled shirt seen from behind at the far end, cold blue window light cutting through slatted blinds, dust suspended in the air, muted teal and amber palette, wide shot, shallow depth, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "After a market crash, every analyst on TV explains why it was 'obviously coming'. Where were these warnings before?",
+  "style": "cinematic film still"
+ },
+ "14": {
+  "concept": "Loss aversion",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Moody cinematic still life, a single silver coin frozen mid-spin in the air above a worn oak tabletop in a dim back room, blurred edges of the tumbling metal catching one hard shaft of late afternoon light through a dusty window, deep shadows pooling around scuffed wood grain and a faint ring of condensation, tense quiet atmosphere, shallow depth of field, muted amber and charcoal palette, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "Coin flip offer: heads you win $150, tails you lose $100. Most people refuse. Mathematically, the offer is…",
+  "style": "moody cinematic still life"
+ },
+ "15": {
+  "concept": "Correlation vs. diversification",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Moody cinematic still life, a quiet home office at dusk: a dark wooden desk holding a cold cup of coffee, a pair of reading glasses resting on a blank notepad, and a leather folder, an empty ergonomic chair pushed back, wide window behind showing a blue-grey city skyline dissolving into rain, low warm lamplight raking across dust and grain, contemplative hush, shallow depth of field, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "To spread risk, an investor buys five different tech stocks instead of one. How diversified is he?",
+  "style": "moody cinematic still life"
+ },
+ "16": {
+  "concept": "Marginal thinking",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Cinematic film still, wide interior shot down the aisle of an airliner cabin moments before pushback, rows of vacant grey seats with rumpled belts, a lone traveler seen from behind far forward, warm late-afternoon sun slanting through oval windows and casting long stripes across the carpet, faint haze of dust in the beams, muted teal and amber palette, shallow depth of field, quiet anticipatory stillness, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "A flight is about to depart with empty seats. Someone offers $40 for a seat that 'costs' $400. Should the airline take it?",
+  "style": "cinematic film still"
+ },
+ "17": {
+  "concept": "Confirmation bias",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Moody cinematic film still of a dim home office at night, a solitary figure seen from behind hunched in a worn armchair before a glowing blank laptop, cool blue screen light washing over bookshelves, a cold mug and scattered papers on the desk, rain streaking the dark window, dust motes drifting in the beam, quiet late-hour stillness, shallow depth of field, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "You believe X strongly. You search online for 'evidence that X is true'. What have you actually tested?",
+  "style": "moody cinematic film still"
+ },
+ "18": {
+  "concept": "Law of small numbers",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Cinematic film still of a quiet hospital maternity corridor at dawn, two sets of double doors along a long polished linoleum hallway, pastel walls, empty wheeled bassinets parked against one side, a lone nurse in scrubs seen from behind far down the passage, cool blue window light spilling in soft pools, faint mist outside, calm institutional stillness, shallow depth of field, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "Two hospitals: one delivers 5 babies a day, one delivers 50. Which more often has days where over 70% of babies are boys?",
+  "style": "cinematic film still"
+ },
+ "19": {
+  "concept": "Incentives (the Cobra Effect)",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Cinematic colonial-era film still, a sun-bleached administrative veranda in nineteenth-century India, wide empty stone steps, wicker chairs and a shuttered window, a lone figure in a pale linen suit seen from behind gazing out toward dusty streets and distant palms, harsh late-afternoon light casting long hard shadows, heat haze, faded ochre walls, dust motes drifting, muted period color grade, quiet anticipatory stillness, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "Colonial India: the government pays a bounty for every dead cobra, hoping to reduce them. What happened?",
+  "style": "cinematic colonial-era film still"
+ },
+ "2": {
+  "concept": "Adverse selection",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Cinematic film still at neon-lit dusk outside a large concrete arena, a lone figure in a hooded jacket seen from behind loitering near a shuttered entrance gate, damp pavement mirroring pink and cyan light, faint haze of city drizzle, distant blurred silhouettes queuing far down the plaza, shallow depth of field, moody teal shadows, anamorphic flare, quiet tension, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "A stranger outside the arena offers you a ticket to tonight's sold-out concert for a quarter of face value. Best first question to ask yourself?",
+  "style": "cinematic film still, neon dusk"
+ },
+ "20": {
+  "concept": "Feedback latency",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Cinematic film still, warm dim light in an empty late-night weight room, a lone figure seen from behind in the far distance resting on a bench between sets, chalk dust drifting through a shaft of amber light, worn rubber flooring, racked iron plates and scuffed dumbbells, steel lockers in shadow; through an open doorway a plain kitchen glows cold blue with a bare countertop and a bowl of fruit, quiet contrast, shallow depth of field, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "The same person grinds in the gym for years but quits every diet in three weeks. Most likely difference?",
+  "style": "cinematic film still, moody"
+ },
+ "21": {
+  "concept": "Positive-sum games",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Cinematic film still of a working Mediterranean harbour at dawn, tall stacks of pale Nordic sawn timber bound in steel straps on one quay and rows of dark oak wine barrels resting on the stone dock opposite, a small freighter moored between them, wet cobbles reflecting apricot sunrise light, gulls, cool sea haze, wide symmetrical composition, no figures except a distant silhouette turned away, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "Sweden sells timber to Italy, Italy sells wine to Sweden. Who's winning this exchange?",
+  "style": "cinematic film still"
+ },
+ "22": {
+  "concept": "Expected value",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Moody still life photograph of a blank unmarked lottery slip and a stubby pencil resting on the worn Formica counter of a late-night convenience store, a scattering of loose coins and a crumpled five-dollar-sized paper beside them, buzzing fluorescent tube overhead casting cold greenish light, rain-streaked window glowing with blurred street colors behind, shallow depth of field, quiet anticipatory atmosphere, no people, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "A lottery ticket costs $5. The jackpot is $10 million with odds of 1 in 10 million. On average, each ticket returns…",
+  "style": "moody still life photograph"
+ },
+ "23": {
+  "concept": "Defaults & friction",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Cinematic film still of an empty government office waiting room at dusk, two identical unattended service counters divided by a low partition, rows of vacant plastic chairs, a blank clipboard resting on a wooden ledge beside a capped pen, pale fluorescent light mixing with cold blue window glow, faint dust in the air, muted institutional greens and beige, wide symmetrical composition, quiet bureaucratic stillness, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "Country A: citizens must opt IN to be organ donors — 15% sign up. Country B: everyone's a donor unless they opt OUT — 90% stay in. The difference is mostly…",
+  "style": "cinematic film still"
+ },
+ "3": {
+  "concept": "Sunk cost fallacy",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Cinematic film still, wide shot from several rows behind of a lone silhouetted moviegoer slouched in a plush red cinema seat in a nearly empty theater, the vast blank glow of the screen washing pale blue light across empty rows, dust drifting in the projector beam, worn carpet and armrests, muted amber aisle lighting, quiet restless atmosphere, shallow depth of field, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "You're 45 minutes into a 2-hour movie and it's genuinely bad. You paid $15. What's the rational move?",
+  "style": "cinematic film still"
+ },
+ "4": {
+  "concept": "Base rate neglect",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Moody cinematic film still of an empty hospital consultation room at dusk, a single vinyl chair beside a steel examination table, a sealed test envelope resting face-down on the counter, pale blue light falling through half-closed venetian blinds onto scuffed linoleum, faint reflections in a glass cabinet, cool clinical palette, dust motes suspended in the air, quiet suspense, wide symmetrical composition, shallow depth of field, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "A disease affects 1 in 1,000 people. A test for it is 99% accurate. You test positive. Roughly what's the chance you actually have it?",
+  "style": "moody cinematic film still"
+ },
+ "5": {
+  "concept": "Gambler's fallacy",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Cinematic film still, moody casino noir: a polished roulette wheel viewed from a low three-quarter angle on a green baize table, lacquered wood and brass gleaming, the ivory ball still spinning in a blur around the rim, scattered chips out of focus in the foreground, a single warm pendant lamp pooling light through drifting cigarette haze, deep shadows and dark velvet surroundings, tense hushed atmosphere, no people visible, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "A roulette wheel lands red five times in a row. What's the smartest bet on the next spin?",
+  "style": "cinematic film still, moody casino noir"
+ },
+ "6": {
+  "concept": "Explore vs. exploit",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Cinematic film still at blue-hour dusk: a lone figure seen from behind, coat collar up, standing on a wet cobblestone street in an unfamiliar town, pausing between the warm amber glow of a small familiar restaurant window on one side and a row of dim unlit storefronts receding into mist on the other, reflections shimmering on rain-slick stones, shallow depth of field, quiet contemplative atmosphere, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "New in town for one year. You've found a restaurant you like. How often should you try somewhere new instead?",
+  "style": "cinematic film still, dusk"
+ },
+ "7": {
+  "concept": "Compounding",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Moody still life photograph, a worn wooden tabletop in a dim study, a single tarnished copper coin resting on the left beside a plain closed leather satchel bulging slightly on the right, dust motes drifting in a hard shaft of late afternoon window light, deep shadows, cracked varnish and grain texture, shallow depth of field, quiet contemplative atmosphere of an unmade decision, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "Choice: $1 million today, or 1 cent that doubles every day for 30 days. Which is worth more?",
+  "style": "moody still life photograph"
+ },
+ "8": {
+  "concept": "Anchoring",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Cinematic film still, wide shot of a quiet corporate meeting room seen from behind a seated job candidate in a plain grey blazer, facing an out-of-focus interviewer across a long polished walnut table, empty water glass and closed leather folder between them, late afternoon light slicing through vertical blinds onto the tabletop, cool muted palette, still and tense air, shallow depth of field, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "Salary negotiation. The employer asks: 'What do you want?' Naming a number first will most likely…",
+  "style": "cinematic film still"
+ },
+ "9": {
+  "concept": "Risk compensation",
+  "model": "claude-opus-5",
+  "negative_prompt": "deformed hands, extra fingers, garbled text, distorted faces, low quality",
+  "prompt": "Cinematic film still of a wide city street at dusk, a lone cyclist in a plain helmet seen from behind gliding through a painted bike lane between wet asphalt and passing traffic, tail lights smearing in the damp air, low golden streetlamp glow against blue evening shadow, glossy reflections, drizzle haze, distant blurred buildings, calm anonymous atmosphere, shallow depth of field, highly detailed, coherent, professional photography/art, no text, no watermark",
+  "question": "A city makes bike helmets mandatory. Cyclist head injuries per accident drop — but total accidents rise. Most likely explanation?",
+  "style": "cinematic urban film still"
+ }
+}
